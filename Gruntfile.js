@@ -1,7 +1,3 @@
-grunt.loadNpmTasks('grunt-contrib-clean');
-grunt.loadNpmTasks('grunt-contrib-copy');
-grunt.loadNpmTasks('grunt-contrib-concat');
-
 module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
@@ -99,7 +95,11 @@ module.exports = function (grunt) {
     }
   });
   
-  grunt.registerMultiTask( 'index', 'Process index.tpl.html', function () {
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+
+  grunt.registerMultiTask('index', 'Process index.tpl.html', function () {
     var dirRE = new RegExp('^' + this.data.dir + '\/');
 		
     var jsFiles = this.filesSrc.filter(function (file) {
