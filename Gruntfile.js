@@ -1,64 +1,62 @@
 module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
-	
-	dir: {
-	  src: 'src',
-	  build: 'build',
-	  compile: 'bin'
-	},
-	
-	files: {
-	  src: {
-	    js: ['<%= dir.src %>/**/*.js'],
-		css: ['<%= dir.src %>/**/*.css']
-	  },
-	  build: {
-	    js: ['<%= dir.build %>/**/*.js'],
-		css: ['<%= dir.build %>/**/*.css']
-	  },
-	  vendor: {
-	    js: [
-		  'bower_components/**/*.js',
-		  '!bower_components/**/*.min.js'
-		],
-		css: ['bower_components/**/*.css']
-	  }
-	},
-	
-	clean: [ 
+
+    dir: {
+      src: 'src',
+      build: 'build',
+      compile: 'bin'
+    },
+
+    files: {
+      src: {
+        js: ['<%= dir.src %>/**/*.js'],
+        css: ['<%= dir.src %>/**/*.css']
+      },
+      build: {
+        js: ['<%= dir.build %>/**/*.js'],
+        css: ['<%= dir.build %>/**/*.css']
+      },
+      vendor: {
+        js: [
+          'bower_components/**/*.js',
+          '!bower_components/**/*.min.js'
+        ],
+        css: ['bower_components/**/*.css']
+      }
+    },
+
+    clean: [ 
       '<%= dir.build %>', 
       '<%= dir.compile %>'
     ],
-	
-	copy: {
+
+    copy: {
       src: {
         files: [{
           src: [
-		    '<%= files.src.js %>',
-			'<%= files.src.css %>'
-		  ],
+            '<%= files.src.js %>',
+            '<%= files.src.css %>'
+          ],
           dest: '<%= dir.build %>/',
           cwd: '.',
           expand: true
         }]
       },
       vendor: {
-        files: [
-          {
-            src: [
-			  '<%= files.vendor.js %>',
-			  '<%= files.vendor.css %>'
-			],
-            dest: '<%= dir.build %>/',
-            cwd: '.',
-            expand: true
-          }
-        ]
+        files: [{
+          src: [
+            '<%= files.vendor.js %>',
+            '<%= files.vendor.css %>'
+          ],
+          dest: '<%= dir.build %>/',
+          cwd: '.',
+          expand: true
+        }]
       }
     },
-	
-	concat: {
+
+    concat: {
       js: {
         src: [ 
           '<%= files.vendor.js %>',
@@ -74,7 +72,7 @@ module.exports = function (grunt) {
         dest: '<%= dir.compile %>/<%= pkg.name %>-<%= pkg.version %>.css'
       }
     },
-	
+
     index: {
       build: {
         dir: '<%= dir.build %>',
@@ -82,32 +80,32 @@ module.exports = function (grunt) {
           '<%= files.vendor.js %>',
           '<%= files.build.js %>',
           '<%= files.vendor.css %>',
-		  '<%= files.build.css %>'
+          '<%= files.build.css %>'
         ]
       },
       compile: {
         dir: '<%= dir.compile %>',
         src: [
           '<%= concat.js.dest %>',
-		  '<%= concat.css.dest %>'
+          '<%= concat.css.dest %>'
         ]
       }
     }
   });
-  
+
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.registerMultiTask('index', 'Process index.tpl.html', function () {
     var dirRE = new RegExp('^' + this.data.dir + '\/');
-		
+
     var jsFiles = this.filesSrc.filter(function (file) {
       return file.match(/\.js$/);
     }).map(function (file) {
       return file.replace(dirRE, '');
     });
-	
+
     var cssFiles = this.filesSrc.filter(function (file) {
       return file.match(/\.css$/);
     }).map(function (file) {
@@ -125,14 +123,14 @@ module.exports = function (grunt) {
       }
     });
   });
-  
+
   grunt.registerTask('build', [
     'clean', 'copy:vendor', 'copy:src', 'index:build'
   ]);
-  
+
   grunt.registerTask('compile', [
     'build', 'concat:css', 'concat:js', 'index:compile'
   ]);
-  
+
   grunt.registerTask('default', ['compile']);
 };
