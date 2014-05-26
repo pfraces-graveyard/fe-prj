@@ -74,7 +74,7 @@ plugins
 *   `eslint`: modular linting support
 *   `docco`: provides great documentation through markdown comments in code
 
-[1] https://github.com/ngbp/ngbp
-[2] https://github.com/gruntjs/grunt
-[3] http://bower.io/
-[4] http://git-scm.com/
+[1]: https://github.com/ngbp/ngbp
+[2]: https://github.com/gruntjs/grunt
+[3]: http://bower.io/
+[4]: http://git-scm.com/
