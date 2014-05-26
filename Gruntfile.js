@@ -36,7 +36,7 @@ module.exports = function (grunt) {
     ],
 	
 	copy: {
-      app: {
+      src: {
         files: [{
           src: [
 		    '<%= files.src.js %>',
@@ -125,4 +125,14 @@ module.exports = function (grunt) {
       }
     });
   });
+  
+  grunt.registerTask('build', [
+    'clean', 'copy:vendor', 'copy:src', 'index:build'
+  ]);
+  
+  grunt.registerTask('compile', [
+    'build', 'concat:css', 'concat:js', 'index:compile'
+  ]);
+  
+  grunt.registerTask('default', ['compile']);
 };
