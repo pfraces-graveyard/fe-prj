@@ -1,11 +1,15 @@
+var matchdep = require('matchdep');
+
 module.exports = function (grunt) {
+  matchdep.filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
 
     dir: {
       src: 'src',
-      build: 'build',
-      compile: 'bin'
+      deb: 'build',
+      rel: 'dist'
     },
 
     files: {
@@ -13,9 +17,9 @@ module.exports = function (grunt) {
         js: ['<%= dir.src %>/**/*.js'],
         css: ['<%= dir.src %>/**/*.css']
       },
-      build: {
-        js: ['<%= dir.build %>/**/*.js'],
-        css: ['<%= dir.build %>/**/*.css']
+      deb: {
+        js: ['<%= dir.deb %>/**/*.js'],
+        css: ['<%= dir.deb %>/**/*.css']
       },
       vendor: {
         js: [
@@ -27,8 +31,8 @@ module.exports = function (grunt) {
     },
 
     clean: [ 
-      '<%= dir.build %>', 
-      '<%= dir.compile %>'
+      '<%= dir.deb %>', 
+      '<%= dir.rel %>'
     ],
 
     copy: {
@@ -38,7 +42,7 @@ module.exports = function (grunt) {
             '<%= files.src.js %>',
             '<%= files.src.css %>'
           ],
-          dest: '<%= dir.build %>/',
+          dest: '<%= dir.deb %>/',
           cwd: '.',
           expand: true
         }]
@@ -49,7 +53,7 @@ module.exports = function (grunt) {
             '<%= files.vendor.js %>',
             '<%= files.vendor.css %>'
           ],
-          dest: '<%= dir.build %>/',
+          dest: '<%= dir.deb %>/',
           cwd: '.',
           expand: true
         }]
@@ -60,31 +64,31 @@ module.exports = function (grunt) {
       js: {
         src: [ 
           '<%= files.vendor.js %>',
-          '<%= files.build.js %>'
+          '<%= files.deb.js %>'
         ],
-        dest: '<%= dir.compile %>/<%= pkg.name %>-<%= pkg.version %>.js'
+        dest: '<%= dir.rel %>/<%= pkg.name %>-<%= pkg.version %>.js'
       },
       css: {
         src: [
           '<%= files.vendor.css %>',
-          '<%= files.build.css %>'
+          '<%= files.deb.css %>'
         ],
-        dest: '<%= dir.compile %>/<%= pkg.name %>-<%= pkg.version %>.css'
+        dest: '<%= dir.rel %>/<%= pkg.name %>-<%= pkg.version %>.css'
       }
     },
 
     index: {
-      build: {
-        dir: '<%= dir.build %>',
+      deb: {
+        dir: '<%= dir.deb %>',
         src: [
           '<%= files.vendor.js %>',
-          '<%= files.build.js %>',
+          '<%= files.deb.js %>',
           '<%= files.vendor.css %>',
-          '<%= files.build.css %>'
+          '<%= files.deb.css %>'
         ]
       },
-      compile: {
-        dir: '<%= dir.compile %>',
+      rel: {
+        dir: '<%= dir.rel %>',
         src: [
           '<%= concat.js.dest %>',
           '<%= concat.css.dest %>'
@@ -92,10 +96,6 @@ module.exports = function (grunt) {
       }
     }
   });
-
-  grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-concat');
 
   grunt.registerMultiTask('index', 'Process index.tpl.html', function () {
     var dirRE = new RegExp('^' + this.data.dir + '\/');
@@ -125,11 +125,11 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('build', [
-    'clean', 'copy:vendor', 'copy:src', 'index:build'
+    'clean', 'copy:vendor', 'copy:src', 'index:deb'
   ]);
 
   grunt.registerTask('compile', [
-    'build', 'concat:css', 'concat:js', 'index:compile'
+    'build', 'concat:css', 'concat:js', 'index:rel'
   ]);
 
   grunt.registerTask('default', ['compile']);

@@ -5,6 +5,7 @@
   "private": true,
   "devDependencies": {
     "grunt": "latest",
+    "matchdep": "latest",
     "grunt-contrib-clean": "latest",
     "grunt-contrib-copy": "latest",
     "grunt-contrib-concat": "latest"
